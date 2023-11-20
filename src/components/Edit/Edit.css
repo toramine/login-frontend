@@ -1,0 +1,39 @@
+/* EditPage.css */
+.edit-page-container {
+  text-align: center;
+  max-width: 600px;
+  margin: 50px auto;
+}
+
+.user-details {
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+.user-details label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.user-details input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+}
+
+.update-button,
+.go-back-button {
+  padding: 10px;
+  background-color: #4caf50;
+  color: #fff;
+  text-decoration: none;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.update-button:hover,
+.go-back-button:hover {
+  background-color: #45a049;
+}

@@ -1,0 +1,19 @@
+/* ErrorPage.css */
+
+.error-container {
+  text-align: center;
+  margin-top: 50px;
+}
+
+.error-container h2 {
+  color: #ff0000; /* 赤色のテキスト */
+}
+
+.error-container p {
+  margin: 10px 0;
+}
+
+.error-container a {
+  color: #0066cc; /* 青色のリンク */
+  text-decoration: underline;
+}

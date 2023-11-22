@@ -4,12 +4,33 @@ import { useNavigate } from "react-router-dom";
 import "./Login.css";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = () => {
-    // ログイン処理の実装
+  const handleLogin = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL}${process.env.REACT_APP_LOGIN_API_URI}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username, password }),
+        }
+      );
+
+      if (response.ok) {
+        // ログイン成功時の処理
+        // ダッシュボードへのリダイレクトはバックエンドで行われるため不要
+      } else {
+        // ログイン失敗時の処理
+        console.error("Login failed");
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+    }
   };
 
   const goToHome = () => {
@@ -21,11 +42,11 @@ const Login = () => {
     <div className="login-container">
       <h2>Login</h2>
       <form className="login-form">
-        <label>Email:</label>
+        <label>Username:</label>
         <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          type="text"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
         />
         <br />
         <label>Password:</label>

@@ -7,13 +7,38 @@ const Dashboard = () => {
   const [selectedUserId, setSelectedUserId] = useState(null);
 
   useEffect(() => {
-    // バックエンドからデータを取得する処理
-    fetch(
-      `${process.env.REACT_APP_API_BASE_URL}${process.env.REACT_APP_GETAll_API_URI}`
-    )
-      .then((response) => response.json())
-      .then((data) => setUserData(data))
-      .catch((error) => console.error("Error fetching data:", error));
+    const fetchData = async () => {
+      try {
+        // バックエンドからデータを取得する処理
+        const response = await fetch(
+          `${process.env.REACT_APP_API_BASE_URL}${process.env.REACT_APP_GETAll_API_URI}`,
+          {
+            method: "GET",
+            credentials: "include", // クッキーを含める
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error(
+            `データの取得に失敗しました。ステータス: ${response.status}`
+          );
+        }
+
+        const data = await response.json();
+
+        // ステートを更新する前に data が配列であることを確認
+        if (Array.isArray(data)) {
+          setUserData(data);
+        } else {
+          console.error("取得したデータが配列ではありません:", data);
+          console.log(data);
+        }
+      } catch (error) {
+        console.error("データの取得エラー:", error);
+      }
+    };
+
+    fetchData();
   }, []);
 
   const handleDeleteClick = (userId) => {

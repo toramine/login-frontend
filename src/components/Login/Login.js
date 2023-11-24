@@ -14,6 +14,7 @@ const Login = () => {
         `${process.env.REACT_APP_API_BASE_URL}${process.env.REACT_APP_LOGIN_API_URI}`,
         {
           method: "POST",
+          credentials: "include", // クッキーを含める
           headers: {
             "Content-Type": "application/json",
           },
@@ -23,7 +24,7 @@ const Login = () => {
 
       if (response.ok) {
         // ログイン成功時の処理
-        // ダッシュボードへのリダイレクトはバックエンドで行われるため不要
+        navigate("/dashboard");
       } else {
         // ログイン失敗時の処理
         console.error("Login failed");

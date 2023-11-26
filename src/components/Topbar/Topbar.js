@@ -1,26 +1,29 @@
 // Topbar.js
+import axios from "axios";
+import Cookies from 'js-cookie';
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./Topbar.css";
 
-async function checkAuth() {
-  try {
-    const response = await fetch(
-      `${process.env.REACT_APP_API_BASE_URL}${process.env.REACT_APP_CHECK_AUTH_API_URI}`,
-      {
-        method: "GET",
-        credentials: "include", // クッキーを含める
-      }
-    );
+// async function checkAuth() {
+//   try {
+//     const response = await axios.get(
+//       `${process.env.REACT_APP_API_BASE_URL}${process.env.REACT_APP_CHECK_AUTH_API_URI}`,
+//       {
+//         withCredentials: true, // クッキーを含める
+//         headers: {
+//           'Authorization': `Bearer ${Cookies.get('authToken')}`,
+//         },
+//       }
+//     );
 
-    // サーバーからのレスポンスが正常な場合
-    const data = await response.json();
-    return data.authenticated; // 認証状態を返す
-  } catch (error) {
-    console.error("Error checking authentication:", error);
-    return false;
-  }
-}
+//     // サーバーからのレスポンスが正常な場合
+//     return response.data.authenticated;
+//   } catch (error) {
+//     console.error("Error checking authentication:", error);
+//     return false;
+//   }
+// }
 
 const Topbar = () => {
   const navigate = useNavigate();
@@ -28,37 +31,42 @@ const Topbar = () => {
 
   useEffect(() => {
     async function checkAuthentication() {
-      const isAuthenticated = await checkAuth();
+      const isAuthenticated = Cookies.get('authToken') ? true : false;
       setAuthenticated(isAuthenticated);
+      console.log(isAuthenticated);
     }
 
     checkAuthentication();
-  }, []);
+  }, [Cookies.get('authToken')]);
 
   const handleLogout = async () => {
     try {
-      const response = await fetch(
+      const response = await axios.get(
         `${process.env.REACT_APP_API_BASE_URL}${process.env.REACT_APP_LOGOUT_API_URI}`,
         {
-          method: "GET",
-          credentials: "include", // クッキーを含める
+          withCredentials: true, // クッキーを含める
+          headers: {
+            'Authorization': `Bearer ${Cookies.get('authToken')}`,
+          },
         }
       );
 
-      if (response.ok) {
+      if (response.status === 200) {
         // ログアウトが成功した場合の処理
+        Cookies.remove('authToken'); // クッキーをクリア
         console.log("Logout successful");
         navigate("/"); // ログアウト後のリダイレクト先
       } else {
         // ログアウトが失敗した場合の処理
         console.error("Logout failed");
+        alert("ログアウトに失敗しました。");
       }
     } catch (error) {
       // エラーハンドリング
       console.error("Error during logout:", error);
+      alert("エラーハンドリング");
     }
   };
-
   return (
     <div className="topbar-container">
       <div className="app-title">LoginAPI</div>

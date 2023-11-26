@@ -1,4 +1,5 @@
-// Login.js
+import axios from "axios";
+import Cookies from 'js-cookie';
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Login.css";
@@ -7,38 +8,37 @@ const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-
   const handleLogin = async () => {
     try {
-      const response = await fetch(
+      const response = await axios.post(
         `${process.env.REACT_APP_API_BASE_URL}${process.env.REACT_APP_LOGIN_API_URI}`,
+        { username, password },
         {
-          method: "POST",
-          credentials: "include", // クッキーを含める
+          withCredentials: true,
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ username, password }),
         }
       );
 
-      if (response.ok) {
-        // ログイン成功時の処理
+      if (response.status === 200) {
+        console.log(response.data);
+        Cookies.set('authToken', response.data);
         navigate("/dashboard");
       } else {
-        // ログイン失敗時の処理
-        console.error("Login failed");
+        console.error("Login failed:", response.data.error);
+        // Display error in the browser
+        alert("ログインに失敗しました。");
       }
     } catch (error) {
       console.error("Error during login:", error);
+      alert("ログインに失敗しました。");
     }
   };
 
   const goToHome = () => {
-    // "ホームに移動"ボタンがクリックされたときの処理
     navigate("/");
   };
-
   return (
     <div className="login-container">
       <h2>Login</h2>

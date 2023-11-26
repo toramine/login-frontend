@@ -1,6 +1,9 @@
+import axios from "axios";
+import Cookies from 'js-cookie';
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import "./Edit.css";
+
 
 const Edit = () => {
   const { id } = useParams();
@@ -17,11 +20,16 @@ const Edit = () => {
 
   useEffect(() => {
     // バックエンドからデータを取得する処理
-    fetch(
-      `${process.env.REACT_APP_API_BASE_URL}${process.env.REACT_APP_GETID_API_URI}/${id}`
+    axios.get(
+      `${process.env.REACT_APP_API_BASE_URL}${process.env.REACT_APP_GETID_API_URI}/${id}`,
+      {
+        withCredentials: true, // クッキーを含める
+        headers: {
+          'Authorization': `Bearer ${Cookies.get('authToken')}`,
+        },
+      }
     )
-      .then((response) => response.json())
-      .then((data) => setUserData(data))
+      .then((response) => setUserData(response.data))
       .catch((error) => console.error("Error fetching data:", error));
   }, [id]);
 
@@ -33,24 +41,22 @@ const Edit = () => {
       setError("");
     }
 
-    // バックエンドに新しいユーザーデータを送信する処理
-    fetch(
+    // Send new user data to the backend
+    axios.put(
       `${process.env.REACT_APP_API_BASE_URL}${process.env.REACT_APP_UPDATE_USER_API_URI}/${id}`,
       {
-        method: "PUT",
+        username: newUsername || userData.username,
+        email: newEmail || userData.email,
+        password: newPassword, // Send the password as is
+      },
+      {
         headers: {
-          "Content-Type": "application/json",
+          'Authorization': `Bearer ${Cookies.get('authToken')}`,
         },
-        body: JSON.stringify({
-          username: newUsername || userData.username,
-          email: newEmail || userData.email,
-          password: newPassword, // パスワードをそのまま送信
-        }),
       }
     )
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("User data updated:", data);
+      .then((response) => {
+        console.log("User data updated:", response.data);
         navigate("/dashboard");
       })
       .catch((error) => console.error("Error updating user data:", error));

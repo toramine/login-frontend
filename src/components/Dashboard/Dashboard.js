@@ -1,3 +1,5 @@
+import axios from "axios";
+import Cookies from 'js-cookie';
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./Dashboard.css";
@@ -7,31 +9,23 @@ const Dashboard = () => {
   const [selectedUserId, setSelectedUserId] = useState(null);
 
   useEffect(() => {
+
     const fetchData = async () => {
       try {
-        // バックエンドからデータを取得する処理
-        const response = await fetch(
+        const response = await axios.get(
           `${process.env.REACT_APP_API_BASE_URL}${process.env.REACT_APP_GETAll_API_URI}`,
           {
-            method: "GET",
-            credentials: "include", // クッキーを含める
+            withCredentials: true,
+            headers: {
+              'Authorization': `Bearer ${Cookies.get('authToken')}`,
+            },
           }
         );
 
-        if (!response.ok) {
-          throw new Error(
-            `データの取得に失敗しました。ステータス: ${response.status}`
-          );
-        }
-
-        const data = await response.json();
-
-        // ステートを更新する前に data が配列であることを確認
-        if (Array.isArray(data)) {
-          setUserData(data);
+        if (response.status === 200) {
+          setUserData(response.data);
         } else {
-          console.error("取得したデータが配列ではありません:", data);
-          console.log(data);
+          console.error(`データの取得に失敗しました。ステータス: ${response.status}`);
         }
       } catch (error) {
         console.error("データの取得エラー:", error);
@@ -47,23 +41,21 @@ const Dashboard = () => {
 
   const handleConfirmDelete = async () => {
     try {
-      // バックエンドにユーザー削除のリクエストを送信
-      const response = await fetch(
+      const response = await axios.delete(
         `${process.env.REACT_APP_API_BASE_URL}${process.env.REACT_APP_DELETE_USER_API_URI}/${selectedUserId}`,
         {
-          method: "DELETE",
+          headers: {
+            'Authorization': `Bearer ${Cookies.get('authToken')}`,
+          },
         }
       );
 
-      if (response.ok) {
-        // 削除成功時の処理
+      if (response.status === 200) {
         setUserData(userData.filter((user) => user.id !== selectedUserId));
       } else {
-        // サーバーからのエラーレスポンスを取得
-        const data = await response.json();
         console.error(
           "Delete user error:",
-          data.message || "削除に失敗しました。"
+          response.data.message || "削除に失敗しました。"
         );
       }
     } catch (error) {

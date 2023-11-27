@@ -1,6 +1,6 @@
 // 例えば、App.jsファイル内での変更
 import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import Dashboard from "./components/Dashboard/Dashboard";
 import Edit from "./components/Edit/Edit";
 import ErrorPage from "./components/ErrorPage/ErrorPage";
@@ -19,7 +19,7 @@ const App = () => {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/edit/:id" element={<Edit />} />
-        <Route path="/errorpage" component={ErrorPage} />
+        <Route path="/errorpage" element={<ErrorPage />} />
       </Routes>
     </Router>
   );

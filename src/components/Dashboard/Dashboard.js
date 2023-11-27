@@ -1,13 +1,13 @@
 import axios from "axios";
 import Cookies from 'js-cookie';
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./Dashboard.css";
 
 const Dashboard = () => {
   const [userData, setUserData] = useState([]);
   const [selectedUserId, setSelectedUserId] = useState(null);
-
+  const navigate = useNavigate();
   useEffect(() => {
 
     const fetchData = async () => {
@@ -26,9 +26,11 @@ const Dashboard = () => {
           setUserData(response.data);
         } else {
           console.error(`データの取得に失敗しました。ステータス: ${response.status}`);
+          navigate('/errorpage');
         }
       } catch (error) {
         console.error("データの取得エラー:", error);
+        navigate('/errorpage');
       }
     };
 
@@ -56,10 +58,12 @@ const Dashboard = () => {
         console.error(
           "Delete user error:",
           response.data.message || "削除に失敗しました。"
-        );
+          );
+        navigate('/errorpage');
       }
     } catch (error) {
       console.error("Delete user error:", error);
+      navigate('/errorpage');
     } finally {
       setSelectedUserId(null);
     }

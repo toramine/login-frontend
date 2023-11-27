@@ -30,7 +30,10 @@ const Edit = () => {
       }
     )
       .then((response) => setUserData(response.data))
-      .catch((error) => console.error("Error fetching data:", error));
+      .catch((error) => {
+        // console.error("Error fetching data:", error);
+        navigate('/errorpage');
+      });
   }, [id]);
 
   const handleUpdate = () => {
@@ -59,7 +62,10 @@ const Edit = () => {
         console.log("User data updated:", response.data);
         navigate("/dashboard");
       })
-      .catch((error) => console.error("Error updating user data:", error));
+      .catch((error) => {
+        console.error("Error updating user data:", error);
+        navigate('/errorpage');
+      });
   };
 
   const goToDashboard = () => {

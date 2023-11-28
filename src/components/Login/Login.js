@@ -22,8 +22,8 @@ const Login = () => {
       );
 
       if (response.status === 200) {
-        console.log(response.data);
-        Cookies.set('authToken', response.data);
+        const token = response.data.token;
+        Cookies.set('authToken', token);
         navigate("/dashboard");
       } else {
         console.error("Login failed:", response.data.error);
